@@ -1,3 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Todo List</title>
+    <!-- Fonts -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css">
+
+    <script src="angular.js"></script>
+    <style>
+        .done {
+            text-decoration: line-through;
+        }
+
+        #wrapper {
+            width: 400px;
+            margin: 50px auto 0 auto;
+        }
+
+        #task-list {
+            margin-top: 30px;
+            font-size: 1.25em;
+            list-style: none;
+        }
+    </style>
+    <script>
+        var app = angular.module('my-app', []);
+        app.controller('ToDoListController', function($scope) {
+            $scope.tasks = [
+                {description: 'Feed the Cat',
+                        class: 'open'},
+                {description: 'Feed the Dog',
+                        class: 'open'}]
+
+            $scope.addTask = function(){
+                $scope.tasks.push({description: $scope.new})
+                $scope.new = '';
+            }
+
+            $scope.delete = function(idx){
+
+            }
+
+            $scope.check = function(idx){
+                if ($scope.tasks[idx].class === 'open'){
+                    $scope.tasks[idx].class = 'done';
+                } else {
+                    $scope.tasks[idx].class = 'open';
+                }
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <div id="wrapper" ng-app="my-app" ng-controller="ToDoListController">
+        <h1 class="text-info">ToDo List What</h1>
+        <form class="form" ng-submit="addTask()">
+            <div class="input-group">
+                <input class="form-control" type="text" ng-model="new" name="task" placeholder="DO IT">
+                <span class="input-group-btn">
+                    <button id="add-button" class="btn btn-info" type="submit">Add Task</button>
+                </span>
+            </div>
+        </form>
+        <ul id="task-list">
+            <li ng-repeat="task in tasks track by $index">
+                <i ng-click="tasks.splice($index, 1);" class="fa fa-times remove" aria-hidden="true"></i>
+                <i ng-click="check($index)" class="fa fa-check check" aria-hidden="true"></i>
+                <!-- <i class="fa fa-pencil-square-o edit" aria-hidden="true"> -->
+                <span class="{{task.class}}">{{task.description}}</span>
+            </li>
+        </ul>
+    </div>
+</body>
+
+</html>
+
+
+
 <!--
 Make a todo list app part 1.
 
@@ -6,36 +90,6 @@ Make a todo list app part 1.
 
 Hints at the bottom of this file.
 -->
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Todo List</title>
-    <script src="angular.js"></script>
-    <style>
-    .done { text-decoration: line-through; }
-    </style>
-    <script>
-    // Write JS code here
-    </script>
-  </head>
-  <body>
-    <div ng-app="my-app" ng-controller="ToDoListController">
-      <form ng-submit>
-        <input type="text"><button type="submit">Add</button>
-      </form>
-      <ul>
-        <!-- this is just place holder data -->
-        <li>Task one</li>
-        <li>Task two</li>
-        <li>Task three</li>
-      </ul>
-  </body>
-</html>
-
-
-
-
 
 
 

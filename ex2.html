@@ -10,6 +10,10 @@ Make an app to converts celcius to fahrenheit. No JavaScript is necessary. Hints
   </head>
   <body>
     <!-- write AngularJS template code here -->
+    <div ng-app ng-init="c = 0;">
+        <input type="number" ng-model="c">
+        <label>{{c}} degrees Celsius is {{c*1.8 + 32}} degrees Farenheit</label>
+    </div>
   </body>
 </html>
 

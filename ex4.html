@@ -16,49 +16,65 @@ Hints at the bottom of this file.
 -->
 <!DOCTYPE html>
 <html>
-  <head>
+
+<head>
     <meta charset="utf-8">
     <title>Fight or Flight</title>
     <script src="angular.js"></script>
     <script>
-    var app = angular.module('my-app', []);
-    app.controller('MainController', function($scope) {
-      $scope.dragonHealth = 20;
-      $scope.heroHealth = 10;
+        var app = angular.module('my-app', []);
+        app.controller('MainController', function($scope) {
+            $scope.heroHealth = 10;
+            $scope.dragonHealth = 20;
+            $scope.message = "So....there's this dragon"
+            $scope.fight = function() {
+                var num = Math.random();
+                if (num <0.5){
+                    $scope.heroHealth -= 5;
+                    $scope.check();
+                } else {
+                    $scope.dragonHealth -= 5;
+                    $scope.check();
+                }
+            };
+            $scope.flight = function() {
+                $scope.heroHealth += 2;
+                $scope.check();
+            };
 
-      $scope.fight = function() {
-        var num = Math.random();
-        if (num > 0.5) {
-          $scope.dragonHealth -= 5;
-        } else {
-          $scope.heroHealth -= 5;
-        }
-        checkWinner();
-      };
+            $scope.check = function() {
+                if ($scope.heroHealth < 0){
+                    $scope.gameOver = true;
+                    $scope.message = 'You died :('
+                } else if ($scope.dragonHealth < 0){
+                    $scope.gameOver = true;
+                    $scope.message = 'You killed the dragon!!!!'
+                }
+            }
 
-      $scope.flight = function() {
-        $scope.heroHealth += 2;
-        checkWinner();
-      };
-
-      function checkWinner() {
-        if ($scope.dragonHealth <= 0) {
-          $scope.message = 'You win!';
-        }
-        if ($scope.heroHealth <= 0){
-          $scope.message = 'You lose!';
-        }
-      }
-    });
+            $scope.newGame = function() {
+                $scope.heroHealth = 10;
+                $scope.dragonHealth = 20;
+                $scope.message = "So....there's this dragon";
+                $scope.gameOver = false;
+            };
+        });
     </script>
-  </head>
-  <body ng-app="my-app" ng-controller="MainController">
-    Hero: {{heroHealth}}<br>
-    Dragon: {{dragonHealth}}
-    {{ message }}
-    <button ng-click="fight()">Fight</button>
-    <button ng-click="flight()">Flight</button>
-  </body>
+</head>
+
+<body ng-app="my-app" ng-controller="MainController">
+    <div ng-show="!gameOver">
+        Hero: {{heroHealth}}<br> Dragon: {{dragonHealth}}<br>{{message}}<br>
+        <button ng-click="fight()">Fight</button>
+        <button ng-click="flight()">Flight</button>
+    </div>
+    <div ng-show="gameOver">
+        <h1>{{message}}</h1>
+        <button ng-click="newGame()">Play again</button>
+    </div>
+
+</body>
+
 </html>
 
 
