@@ -1,3 +1,218 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Making Change</title>
+    <!-- Fonts -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Bootstrap CSS-->
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css">
+
+    <script src="angular.js"></script>
+    <script>
+        <!-- write JS in here -->
+        var app = angular.module('make-change', []);
+        app.controller('ChangeController', function($scope) {
+            $scope.total = '';
+            $scope.cash = '';
+            $scope.error = false;
+            $scope.getChange = function() {
+                // var total = parseFloat($scope.total);
+                // var cash = parseFloat($scope.cash);
+                $scope.diff = (parseFloat($scope.cash) - parseFloat($scope.total));
+                $scope.diffDollars = Math.floor(Number($scope.cash) - Number($scope.total));
+                $scope.diffCents = Math.round(($scope.diff - $scope.diffDollars)*100);
+                // console.log(total);
+                // console.log(cash);
+                console.log('CHANGE:', $scope.diff);
+                console.log('CHANGE - dollars:', $scope.diffDollars);
+                console.log('CHANGE - cents:', $scope.diffCents);
+                $scope.error = false;
+                $scope.change = false;
+                if ($scope.doubleCheck()) {
+                    $scope.change = true;
+                    $scope.hasDollars = false;
+                    $scope.hasQuarters = false;
+                    $scope.hasDimes = false;
+                    $scope.hasNickles = false;
+                    $scope.hasPennies = false;
+                    if ($scope.diffDollars >= 1){
+                        $scope.hasDollars = true;
+                        $scope.dollars = $scope.diffDollars
+                        $scope.getCoins($scope.diffCents);
+                    } else {
+                        $scope.getCoins($scope.diffCents);
+                    }
+                }
+            }
+
+            $scope.getCoins = function() {
+                $scope.quarters = $scope.diffCents/25;
+                if ($scope.quarters >= 1) {
+                    $scope.quarters = Math.floor($scope.diffCents/25);
+                    $scope.hasQuarters = true;
+                    $scope.diffCents = $scope.diffCents - ($scope.quarters*25);
+                    console.log('after quarters: ',$scope.diffCents);
+                }
+                $scope.dimes = $scope.diffCents/10;
+                if ($scope.dimes >= 1) {
+                    $scope.dimes = Math.floor($scope.diffCents/10);
+                    console.log($scope.dimes);
+                    $scope.hasDimes = true;
+                    $scope.diffCents = $scope.diffCents - ($scope.dimes*10);
+                    console.log('after dimes: ',$scope.diffCents);
+                }
+                $scope.nickles = $scope.diffCents/5;
+                console.log('got nickles');
+                if ($scope.nickles >= 1) {
+                    $scope.nickles = Math.floor($scope.diffCents/5);
+                    $scope.hasNickles = true;
+                    $scope.diffCents = $scope.diffCents - ($scope.nickles*5);
+                    console.log('after nickles: ',$scope.diffCents);
+                }
+                $scope.pennies = $scope.diffCents/1;
+                console.log('got pennies');
+                if ($scope.pennies >= 1) {
+                    console.log('entered pennies');
+                    $scope.pennies = Math.floor($scope.diffCents/1);
+                    $scope.hasPennies = true;
+                    $scope.diffCents = $scope.diffCents - $scope.pennies;
+                    console.log('after pennies: ',$scope.diffCents);
+                }
+            }
+
+            $scope.doubleCheck = function() {
+                if ($scope.diff < 0) {
+                    $scope.error = true;
+                    $scope.errorMessage = "The customer owes you more money!"
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        });
+    </script>
+    <style>
+        html {
+            height: 100%;
+        }
+        body {
+            height: 100%;
+        }
+        #container1 {
+            /*border: 4px solid orange;*/
+            height: 100%;
+        }
+        #row1 {
+            /*border: 4px solid red;*/
+            min-height: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        #legend {
+            font-size: 2em;
+            text-transform: uppercase;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        #form {
+            /*border: 4px solid blue;*/
+            padding: 20px 20px 20px 20px;
+        }
+
+        .summary {
+            margin: 0 0 20px 0;
+            font-size: 1.2em;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+        #dollars {
+            font-weight: bold;
+            font-size: 3em;
+        }
+
+        .count {
+            font-size: 3em;
+        }
+
+        td {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- write template code in here -->
+    <div id="container1" class="container">
+        <div id="row1" class="row">
+            <div class="col-xs-12 col-sm-8 col-md-6" ng-app="make-change" ng-controller="ChangeController">
+                <form id="form" class="form-horizontal" ng-submit="getChange()">
+                    <fieldset>
+                        <legend id="legend" class="text-success">Make change</legend>
+                        <div class="form-group">
+                            <label class="control-label" for="total">Total Bill Amount ($)</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">$</span>
+                                <input class="form-control" ng-model="total" type="text" name="total" pattern="(\d)+\.(\d){2}" placeholder="00.00">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label" for="cash">Cash Given($)</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">$</span>
+                                <input class="form-control" ng-model="cash" type="text" name="cash" pattern="(\d)+\.(\d){2}" placeholder="00.00">
+                            </div>
+                        </div>
+                        <div class="summary">
+                            The customer gave you $<span class="text-success">{{cash}}</span> for a bill of $<span class="text-success">{{total}}</span>.
+                        </div>
+                        <button class="btn btn-success" type="submit" name="button">Make change!</button>
+                    </fieldset>
+                </form>
+                <div ng-show="error" class="summary text-danger">
+                    {{errorMessage}}
+                </div>
+                <div ng-show="change" class="well">
+                    <h3>The customer's change is $<span class="text-success bold">{{diff}}</span></h3>
+                    <table class="table table-responsive">
+                        <tr>
+                            <td ng-show="hasDollars">
+                                <span class="count">{{dollars}}</span><br>
+                                <span id="dollars">$</span>
+                            </td>
+                            <td ng-show="hasQuarters">
+                                <span class="count">{{quarters}}</span><br>
+                                <img src="quarter-front.png"/>
+                            </td>
+                            <td ng-show="hasDimes">
+                                <span class="count">{{dimes}}</span><br>
+                                <img src="dime-front.png"/>
+                            </td>
+                            <td ng-show="hasNickles">
+                                <span class="count">{{nickles}}</span><br>
+                                <img src="nickle-front.png"/>
+                            </td>
+                            <td ng-show="hasPennies">
+                                <span class="count">{{pennies}}</span><br>
+                                <img src="penny-front.png"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+
 <!--
 Instructor Toby used to work at a super market as a cashier. His work experience there has made him an expert in making change.
 
@@ -19,17 +234,3 @@ The app should have
 5. Extra super bonus: write this same app using jQuery or nothing but the DOM native API. Compare and contrast.
 
 -->
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Making Change</title>
-    <script src="angular.js"></script>
-    <script>
-    <!-- write JS in here -->
-    </script>
-  </head>
-  <body>
-    <!-- write template code in here -->
-  </body>
-</html>
